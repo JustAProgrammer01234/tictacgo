@@ -58,6 +58,6 @@ func InsertToBoard(val string, col int, row int, board [][]string) bool {
 }
 
 func main() {
-	board := [][]string{{" ", " ", "X"}, {" ", " ", " "}, {" ", " ", " "}}
+	board := [][]string{{" ", " ", " "}, {" ", " ", " "}, {" ", " ", " "}}
 	PrintBoard(board)
 }
