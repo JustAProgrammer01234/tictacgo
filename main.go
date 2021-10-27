@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
@@ -51,13 +54,61 @@ func BoardFull(board [][]string) bool {
 
 func InsertToBoard(val string, col int, row int, board [][]string) bool {
 	if board[col][row] == " " {
-		return false
+		board[col][row] = val
+		return true
 	}
-	board[col][row] = val
-	return true
+	return false
 }
 
 func main() {
-	board := [][]string{{" ", " ", "X"}, {" ", " ", " "}, {" ", " ", " "}}
-	PrintBoard(board)
+	board := [][]string{{" ", " ", " "}, {" ", " ", " "}, {" ", " ", " "}}
+	for {
+		PrintBoard(board)
+
+		if BoardFull(board) {
+			fmt.Println("No one won :(")
+			break
+		} else {
+			winner := BoardStatus(board)
+			if winner != "" {
+				if winner == "X" {
+					fmt.Println("X wins!")
+				} else {
+					fmt.Println("O wins!")
+				}
+				break
+			}
+		}
+
+		col_scanner := bufio.NewScanner((os.Stdin))
+		fmt.Printf("Enter column: ")
+		col_scanner.Scan()
+		col, col_err := strconv.Atoi(col_scanner.Text())
+
+		if col_err != nil {
+			break
+		}
+
+		row_scanner := bufio.NewScanner((os.Stdin))
+		fmt.Printf("Enter row: ")
+		row_scanner.Scan()
+		row, row_err := strconv.Atoi(row_scanner.Text())
+
+		if row_err != nil {
+			break
+		}
+
+		val_scanner := bufio.NewScanner((os.Stdin))
+		fmt.Printf("Enter value: ")
+		val_scanner.Scan()
+		val := val_scanner.Text()
+
+		if val == "X" || val == "O" {
+			if !(InsertToBoard(val, col, row, board)) {
+				fmt.Println("That position is taken.")
+			}
+		} else {
+			fmt.Println("Value must be X or O.")
+		}
+	}
 }
