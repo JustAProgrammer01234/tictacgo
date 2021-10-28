@@ -9,8 +9,8 @@ import (
 )
 
 func PrintBoard(board [][]string) {
-	for _, row := range board {
-		fmt.Println(strings.Join(row, " | "))
+	for _, col := range board {
+		fmt.Println(strings.Join(col, " | "))
 	}
 }
 
@@ -60,10 +60,52 @@ func InsertToBoard(val string, col int, row int, board [][]string) bool {
 	return false
 }
 
+func GetPos(col bool) int {
+	var messageInput string
+	var err string
+	if col {
+		messageInput = "Enter column: "
+		err = "Column must be a number."
+	} else {
+		messageInput = "Enter row: "
+		err = "Row must be a number."
+	}
+	for {
+		pos_scanner := bufio.NewScanner((os.Stdin))
+		fmt.Printf(messageInput)
+		pos_scanner.Scan()
+		c, col_err := strconv.Atoi(pos_scanner.Text())
+
+		if col_err != nil {
+			fmt.Println(err)
+			continue
+		} else {
+			return c
+		}
+	}
+}
+
+func GetValue() string {
+	for {
+		val_scanner := bufio.NewScanner((os.Stdin))
+		fmt.Printf("Enter value: ")
+		val_scanner.Scan()
+		val := val_scanner.Text()
+		if val == "X" || val == "O" {
+			return val
+		} else {
+			fmt.Println("Value must be X or O.")
+		}
+	}
+}
+
 func main() {
+	fmt.Println("Tictacgo")
 	board := [][]string{{" ", " ", " "}, {" ", " ", " "}, {" ", " ", " "}}
 	for {
+		fmt.Println("")
 		PrintBoard(board)
+		fmt.Println("")
 
 		if BoardFull(board) {
 			fmt.Println("No one won :(")
@@ -80,35 +122,12 @@ func main() {
 			}
 		}
 
-		col_scanner := bufio.NewScanner((os.Stdin))
-		fmt.Printf("Enter column: ")
-		col_scanner.Scan()
-		col, col_err := strconv.Atoi(col_scanner.Text())
+		col := GetPos(true)
+		row := GetPos(false)
+		val := GetValue()
 
-		if col_err != nil {
-			break
-		}
-
-		row_scanner := bufio.NewScanner((os.Stdin))
-		fmt.Printf("Enter row: ")
-		row_scanner.Scan()
-		row, row_err := strconv.Atoi(row_scanner.Text())
-
-		if row_err != nil {
-			break
-		}
-
-		val_scanner := bufio.NewScanner((os.Stdin))
-		fmt.Printf("Enter value: ")
-		val_scanner.Scan()
-		val := val_scanner.Text()
-
-		if val == "X" || val == "O" {
-			if !(InsertToBoard(val, col, row, board)) {
-				fmt.Println("That position is taken.")
-			}
-		} else {
-			fmt.Println("Value must be X or O.")
+		if !(InsertToBoard(val, col, row, board)) {
+			fmt.Println("That position is taken.")
 		}
 	}
 }
